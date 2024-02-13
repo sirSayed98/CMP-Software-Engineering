@@ -31,15 +31,42 @@ function fetchEmployees() {
 
 // TODO
 // add event listener to submit button
+// when the sumbit button is clicked, call createEmployee
+form = document.getElementById('employeeForm')
+form.addEventListener('submit', (e) => {
+  e.preventDefault()
+  createEmployee()
+})
 
 // TODO
 // add event listener to delete button
-
+table = document.getElementById('dataTable')
+table.addEventListener('click', (e) => {
+  if (e.target.textContent === 'Delete') {
+    deleteEmployee()
+  }
+})
 // TODO
 function createEmployee (){
-  // get data from input field
-  // send data to BE
-  // call fetchEmployees
+  // get the name 
+  form = document.getElementById('employeeForm')
+  const name = form.name.value
+  const id = form.id.value
+  // send name to BE 
+  fetch('http://localhost:3000/api/v1/employee', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name, id })
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      fetchEmployees()
+    })
+    .catch(error => console.error(error))
+
 }
 
 // TODO
@@ -47,6 +74,17 @@ function deleteEmployee (){
   // get id
   // send id to BE
   // call fetchEmployees
+  e = window.event
+  const id = e.target.parentElement.parentElement.firstChild.textContent
+  fetch(`http://localhost:3000/api/v1/employee/${id}`, {
+    method: 'DELETE'
+  })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data)
+      fetchEmployees()
+    })
+    .catch(error => console.error(error))
 }
 
 fetchEmployees()
